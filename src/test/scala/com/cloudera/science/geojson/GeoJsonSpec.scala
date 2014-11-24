@@ -1,20 +1,25 @@
 package com.cloudera.science.geojson
 
-import com.esri.core.geometry._
+import com.esri.core.geometry.Point
 import org.scalatest.{Matchers, FlatSpec}
-import scala.io.Source
 import spray.json._
 import GeoJsonProtocol._
+import RichGeometry._
 
 class GeoJsonSpec extends FlatSpec with Matchers {
-  val geojson = Source.fromURL(getClass.getResource("/boroughs.geojson")).mkString
+  val geojson = scala.io.Source.fromURL(getClass.getResource("/boroughs.geojson")).mkString
 
-  "GeoJson" should "correctly parse the NYC boroughs" in {
-    val fc = geojson.parseJson.convertTo[FeatureCollection]
-    val boroughs = fc.features.map(f => f.properties("borough").compactPrint -> f.geometry)
-   // boroughs.foreach(println)
-    val point = new Point(-73.812, 40.6036)
-    boroughs.map { case (name, geo) => GeometryEngine.equals(geo, geo, SpatialReference.create(4326)) }.
-      foreach(println)
+  "GeoJson" should "correctly parse the NYC boroughs into usable Geometry objects" in {
+    val features = geojson.parseJson.convertTo[FeatureCollection]
+    val point = new Point(-73.994499, 40.75066)
+    val b = features.filter(f => f.geometry.contains(point))
+    b.map(f => f.properties("borough").convertTo[String]) should be(Array("Manhattan"))
+  }
+
+  "GeoJson" should "parse GeoJSON into objects and back again" in {
+    val features = geojson.parseJson.convertTo[FeatureCollection]
+    val geojson2 = features.toJson.compactPrint
+    val features2 = geojson2.parseJson.convertTo[FeatureCollection]
+    features2.toJson.compactPrint should be(geojson2)
   }
 }
