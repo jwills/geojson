@@ -25,7 +25,8 @@ import com.esri.core.geometry.{GeometryEngine, SpatialReference, Geometry}
  * @param spatialReference optional spatial reference; if not specified, uses WKID 4326 a.k.a. WGS84, the
  *                         standard coordinate frame for Earth.
  */
-class RichGeometry(val geometry: Geometry, val spatialReference: SpatialReference = SpatialReference.create(4326)) {
+class RichGeometry(val geometry: Geometry,
+                   val spatialReference: SpatialReference = SpatialReference.create(4326)) extends Serializable {
 
   def contains(other: Geometry): Boolean = {
     GeometryEngine.contains(geometry, other, spatialReference)
@@ -60,6 +61,6 @@ class RichGeometry(val geometry: Geometry, val spatialReference: SpatialReferenc
  * Helper object for implicitly creating RichGeometry wrappers
  * for a given Geometry instance.
  */
-object RichGeometry {
+object RichGeometry extends Serializable {
   implicit def createRichGeometry(g: Geometry) = new RichGeometry(g)
 }
