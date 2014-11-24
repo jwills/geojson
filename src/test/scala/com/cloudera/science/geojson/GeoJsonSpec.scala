@@ -4,7 +4,6 @@ import com.esri.core.geometry.Point
 import org.scalatest.{Matchers, FlatSpec}
 import spray.json._
 import GeoJsonProtocol._
-import RichGeometry._
 
 class GeoJsonSpec extends FlatSpec with Matchers {
   val geojson = scala.io.Source.fromURL(getClass.getResource("/boroughs.geojson")).mkString
