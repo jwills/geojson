@@ -159,16 +159,28 @@
       <url>http://repo.spray.io/</url>
     </repository>
     <repository>
-      <id>cloudera</id>
-      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
-    </repository>
-    <repository>
       <id>scala-tools.org</id>
       <url>http://scala-tools.org/repo-releases</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>cloudera</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+    </repository>
+    <repository>
+      <id>cloudera-local</id>
+      <name>Cloudera Snapshots</name>
+      <url>https://repository.cloudera.com/artifactory/libs-release-local/</url>
+    </repository>
   </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>cloudera-local</id>
+      <url>https://repository.cloudera.com/artifactory/libs-release-local/</url>
+    </repository>
+  </distributionManagement>
 
 </project>
