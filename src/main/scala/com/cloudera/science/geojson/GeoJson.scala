@@ -17,18 +17,29 @@ package com.cloudera.science.geojson
 import com.esri.core.geometry.{Geometry, GeometryEngine}
 import spray.json._
 
-case class Feature(val id: Option[JsValue], val properties: Map[String, JsValue], val geometry: RichGeometry)
-case class FeatureCollection(val features: Array[Feature]) extends Iterable[Feature] {
-  def iterator = features.iterator
+case class Feature(val id: Option[JsValue],
+    val properties: Map[String, JsValue],
+    val geometry: RichGeometry) {
+  def apply(property: String) = properties(property)
+  def get(property: String) = properties.get(property)
 }
-case class GeometryCollection(val geometries: Array[RichGeometry]) extends Iterable[RichGeometry] {
-  def iterator = geometries.iterator
+
+case class FeatureCollection(val features: Array[Feature])
+    extends IndexedSeq[Feature] {
+  def apply(index: Int) = features(index)
+  def length = features.length
+}
+
+case class GeometryCollection(val geometries: Array[RichGeometry])
+    extends IndexedSeq[RichGeometry] {
+  def apply(index: Int) = geometries(index)
+  def length = geometries.length
 }
 
 object GeoJsonProtocol extends DefaultJsonProtocol {
   implicit object RichGeometryJsonFormat extends RootJsonFormat[RichGeometry] {
     def write(g: RichGeometry) = {
-      GeometryEngine.geometryToGeoJson(g.spatialReference, g.geometry).parseJson
+      GeometryEngine.geometryToGeoJson(g.csr, g.geometry).parseJson
     }
     def read(value: JsValue) = {
       val mg = GeometryEngine.geometryFromGeoJson(value.compactPrint, 0, Geometry.Type.Unknown)

@@ -22,38 +22,40 @@ import com.esri.core.geometry.{GeometryEngine, SpatialReference, Geometry}
  * SpatialReference.
  *
  * @param geometry the geometry object
- * @param spatialReference optional spatial reference; if not specified, uses WKID 4326 a.k.a. WGS84, the
+ * @param csr optional spatial reference; if not specified, uses WKID 4326 a.k.a. WGS84, the
  *                         standard coordinate frame for Earth.
  */
 class RichGeometry(val geometry: Geometry,
-                   val spatialReference: SpatialReference = SpatialReference.create(4326)) extends Serializable {
+                   val csr: SpatialReference = SpatialReference.create(4326)) extends Serializable {
+
+  def area2D(): Double = geometry.calculateArea2D()
+
+  def distance(other: Geometry): Double = {
+    GeometryEngine.distance(geometry, other, csr)
+  }
 
   def contains(other: Geometry): Boolean = {
-    GeometryEngine.contains(geometry, other, spatialReference)
+    GeometryEngine.contains(geometry, other, csr)
   }
 
   def within(other: Geometry): Boolean = {
-    GeometryEngine.within(geometry, other, spatialReference)
+    GeometryEngine.within(geometry, other, csr)
   }
 
   def overlaps(other: Geometry): Boolean = {
-    GeometryEngine.overlaps(geometry, other, spatialReference)
+    GeometryEngine.overlaps(geometry, other, csr)
   }
 
   def touches(other: Geometry): Boolean = {
-    GeometryEngine.touches(geometry, other, spatialReference)
+    GeometryEngine.touches(geometry, other, csr)
   }
 
   def crosses(other: Geometry): Boolean = {
-    GeometryEngine.crosses(geometry, other, spatialReference)
+    GeometryEngine.crosses(geometry, other, csr)
   }
 
   def disjoint(other: Geometry): Boolean = {
-    GeometryEngine.disjoint(geometry, other, spatialReference)
-  }
-
-  def distance(other: Geometry): Double = {
-    GeometryEngine.distance(geometry, other, spatialReference)
+    GeometryEngine.disjoint(geometry, other, csr)
   }
 }
 
